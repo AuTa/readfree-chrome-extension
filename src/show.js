@@ -16,34 +16,37 @@
     // search with douban id
     function search(doubanId, linkType, parentTag, siblingTag) {
         if (!port || port.name!='douban-id') {
-            $.getJSON('https://readfree.me/search/?q=' + doubanId + '&fmt=json', function (data) {
-                if (data.hits.hit.length) {
-                    // Book found
-                    var editions = data.hits.hit[0].fields.editions;
-                    var types = getTypesFromEditions(editions);
-                    var text = 'Readfree';
-                    if (types) {
-                        switch (linkType) {
-                            case gb.LINK_TYPE.SUBJECT:
-                                text = 'Readfree (' + types + ')';
-                                break;
-
-                            default:
-                                text = types;
+            chrome.runtime.sendMessage(
+                {contentScriptQuery: "readfreeSearchByID", doubanID: doubanId},
+                data => {
+                    if (data.hits.hit.length) {
+                        // Book found
+                        var editions = data.hits.hit[0].fields.editions;
+                        var types = getTypesFromEditions(editions);
+                        var text = 'Readfree';
+                        if (types) {
+                            switch (linkType) {
+                                case gb.LINK_TYPE.SUBJECT:
+                                    text = 'Readfree (' + types + ')';
+                                    break;
+    
+                                default:
+                                    text = types;
+                            }
                         }
+                        var url = 'https://readfree.me/book/' + doubanId;
+    
+                        var panel = getLinkStyle(linkType, url, text);
+                        if (siblingTag) {
+                            parentTag.insertBefore(panel, siblingTag);
+                        }
+                        else {
+                            parentTag.appendChild(panel);
+                        }
+                        parentTag.setAttribute('has-readfree', '1');
                     }
-                    var url = 'https://readfree.me/book/' + doubanId;
-
-                    var panel = getLinkStyle(linkType, url, text);
-                    if (siblingTag) {
-                        parentTag.insertBefore(panel, siblingTag);
-                    }
-                    else {
-                        parentTag.appendChild(panel);
-                    }
-                    parentTag.setAttribute('has-readfree', '1');
                 }
-            })
+            )
         }
     }
 

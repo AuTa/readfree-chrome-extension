@@ -1,6 +1,6 @@
 {
   "name": "readfree-chrome-extension",
-  "version": "2.9.2",
+  "version": "2.9.4",
   "description": "“豆瓣读书”页面到ReadFree电子书的传送门",
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
     "gulp-concat": "^2.6.1",
     "gulp-uglify": "^2.0.0",
     "gulp-watch": "^4.3.10",
+    "gulp-uglify-es": "^1.0.4",
     "pump": "^1.0.1"
   }
 }

@@ -58,3 +58,16 @@ chrome.runtime.onConnect.addListener(function(port) {
     });
   }
 });
+
+chrome.runtime.onMessage.addListener(
+  function (request, sender, sendResponse) {
+    if (request.contentScriptQuery == "readfreeSearchByID") {
+      var url = "https://readfree.me/search/?q=" + request.doubanID + "&fmt=json";
+      fetch(url)
+        .then(response => response.json())
+        .then(json => sendResponse(json))
+        .catch(error => console.log(error))
+      return true;
+    }
+  }
+)
